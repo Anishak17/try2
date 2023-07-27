@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title id="title">BITS</title>
+    <style>
+      th,
+      td {
+        border: 2px solid black;
+        padding: 5px;
+        cursor: pointer;
+      }
+
+    </style>
+  </head>
+
+  <body onload="createTable(2);">
+    <div>
+      SEM:
+      <button onclick="createTable(1);">I</button>
+      <button onclick="createTable(2);">II</button>
+      <button onclick="document.execCommand('subscript', false, null)">Subscript</button>
+      <button onclick="document.execCommand('superscript', false, null)">Superscript</button>
+      <button onclick="document.execCommand('outdent', false, null)">Outdent</button>
+      <button onclick="document.execCommand('indent', false, null)">Indent</button>
+      <button onclick="document.execCommand('insertHorizontalRule', false, null)">Insert Rule</button>
+      <button onclick="document.execCommand('insertUnorderedList', false, null)">Unordered List</button>
+      <button onclick="document.execCommand('insertOrderedList', false, null)">Ordered List</button>
+      <button onclick="document.execCommand('hiliteColor', false, 'yellow')">Highlight</button>
+      <button onclick="document.execCommand('hiliteColor', false, 'transparent')">Unhighlight</button>
+      <button onclick="document.execCommand('removeFormat', false, null)">Remove Format</button>
+      <button onclick="document.execCommand('fontSize', false, document.getElementById('fontsize').value)">Font Size</button>
+      <input type="number" id="fontsize" min="1" max="6">
+      <button onclick="document.execCommand('foreColor', false, document.getElementById('colorPicker').value)">Font Color</button>
+      <input type="color" id="colorPicker">
+    </div><br>
+    <table id="table"></table>
+    <div id="videoPlayer" style="display: none;"></div>
+    <div id="input" style="display: none;"></div>
+    <iframe id="files" src="https://googledriveembedder.collegefam.com/?key=AIzaSyB4KgB73OBFYRPpIavjUBWLMM6YKkJstsY&folderid=1ixBCSDkFsTDGEl2DvBb2Lg5EMRtnb-Bl" style="width:100%; height:300px; border:0;display: none;"></iframe>
+    <script>
+      var sem1Rows = [
+        ["ACI", "ML", "ISM", "MFML", "ACI Webinar", "ML Webinar", "ISM Webinar", "MFML Webinar"],
+        ["2022 Nov 12 8:45", "2022 Nov 12 11:00", "2022 Nov 12 14:00", "2022 Nov 12 16:15", "2022 Dec 15 19:30", "2022 Dec 13 19:30", "2022 Dec 08 19:30", "2022 Dec 06 19:30"],
+        ["2022 Nov 19 8:45", "2022 Nov 19 11:00", "2022 Nov 19 14:00", "2022 Nov 19 16:15", "2022 Dec 21 19:30", "2022 Dec 27 19:30", "2022 Dec 22 19:30", "2022 Dec 20 19:30"],
+        ["2022 Nov 26 8:45", "2022 Nov 26 11:00", "2022 Nov 27 14:00", "2022 Nov 26 16:15", "2022 Dec 29 19:00", "2023 Feb 28 19:30", "2023 Feb 23 19:30", "2023 Feb 21 19:30"],
+        ["2022 Dec 03 8:45", "2022 Dec 03 11:00", "2022 Dec 03 14:00", "2022 Dec 03 16:15", "2023 Feb 16 19:30", "2023 Mar 14 19:30", "2023 Mar 16 19:30", "2023 Mar 22 19:30"],
+        ["2022 Dec 10 8:45", "2022 Dec 10 11:00", "2022 Dec 10 14:00", "2022 Dec 10 16:15", "2023 Mar 21 19:00", "", "2023 Mar 19 17:00"],
+        ["2022 Dec 17 8:45", "2022 Dec 17 11:00", "2022 Dec 17 14:00", "2022 Dec 17 16:15"],
+        ["2022 Dec 24 8:45", "2022 Dec 24 11:00", "2022 Dec 24 14:00", "2022 Dec 24 16:15"],
+        ["2022 Dec 31 8:45", "2022 Dec 31 11:00", "2022 Dec 31 14:00", "2022 Dec 31 16:15"],
+        ["2023 Feb 04 8:45", "2023 Feb 04 11:00", "2023 Feb 04 14:00", "2023 Feb 04 16:15"],
+        ["2023 Feb 11 8:45", "2023 Feb 11 11:00", "2023 Feb 11 14:00", "2023 Feb 11 16:15"],
+        ["2023 Feb 18 8:45", "2023 Feb 18 11:00", "2023 Feb 18 14:00", "2023 Feb 18 16:15"],
+        ["2023 Feb 25 8:45", "2023 Feb 25 11:00", "2023 Feb 25 14:00", "2023 Feb 25 16:15"],
+        ["2023 Mar 04 8:45", "2023 Mar 04 11:00", "2023 Mar 04 14:00", "2023 Mar 04 16:15"],
+        ["2023 Mar 11 8:45", "2023 Mar 11 11:00", "2023 Mar 11 14:00", "2023 Mar 11 16:15"],
+        ["2023 Mar 18 8:45", "2023 Mar 18 11:00", "2023 Mar 18 14:00", "2023 Mar 18 16:15"],
+        ["2023 Mar 25 8:45", "2023 Mar 25 11:00", "2023 Mar 25 14:00", "2023 Mar 25 16:15"]
+      ];
+      var sem2Rows = [
+        ["IR", "NLP", "DRL", "DNN", "IR Webinar", "NLP Webinar", "DRL Webinar", "DNN Webinar"],
+        ["2023 May 20 11:00", "2023 May 20 14:00", "2023 May 21 08:45", "2023 May 21 11:00", "2023 Jun 15 19:30", "2023 Jun 09 19:30", "2023 Jun 23 19:30", "2023 Jun 27 19:30"],
+        ["2023 May 27 11:00", "2023 May 27 14:00", "2023 May 28 08:45", "2023 May 28 11:00", "2023 Jul 04 19:30", "2023 Jun 26 19:30", "2023 Jul 10 19:30", " "],
+        ["2023 Jun 03 11:00", "2023 Jun 03 14:00", "2023 Jun 04 08:45", "2023 Jun 04 11:00", " ", " ", " ", " "],
+        ["2023 Jun 10 11:00", "2023 Jun 10 14:00", "2023 Jun 11 08:45", "2023 Jun 11 11:00", " ", " ", " ", " "],
+        ["2023 Jun 17 11:00", "2023 Jun 17 14:00", "2023 Jun 18 08:45", "2023 Jun 18 11:00", " ", " ", " ", " "],
+        ["2023 Jun 24 11:00", "2023 Jun 24 14:00", "2023 Jun 25 08:45", "2023 Jun 25 11:00", " ", " ", " ", " "],
+        ["2023 Jul 01 11:00", "2023 Jul 01 14:00", "2023 Jul 02 08:45", "2023 Jul 02 11:00", " ", " ", " ", " "],
+        ["2023 Jul 08 11:00", "2023 Jul 08 14:00", "2023 Jul 09 08:45", "2023 Jul 09 11:00", " ", " ", " ", " "],
+      ];
+      var links = [
+        ["ACI", "ML", "ISM", "MFML", "ACI Webinar", "ML Webinar", "ISM Webinar", "MFML Webinar"],
+        ["AILfbXx5470", "0dl4rEbuv7M", "dTy36cwfGik", "EXvHhS_eBZ4", "QUQY0gtDZVo", "FOcePUj6z0A", "WfvI6qRhBQc", "5wQ-fC68dbE"],
+        ["wjgoXQ0oP10", "eV55GNtudE8", "A35d0w2xeVo", "rP-IKR-yx_A", "8KwGUjoBWEE", "RSXIU7jBRUI", "irch_e62cFQ", "nnFqzE5lW6A"],
+        ["H3vYnqXZ2Xw", "ES3vV7RaP_k", "b6z_chv8jq4", "KqBYyFbqhFA", "8NbAMjUpg3E", "j7W5PQ9iewQ", "aFcFI4VbYf0", "nW1aiOWsIgE"],
+        ["Sn6NHES5550", "jOBU8bX0rr0", "dnlQYqxLMB4", "o_u8L-Rs3NE", "LrWCar-x5ZY", "f8LvvbNeu_A", "UqTZgBV-xes", "b1cF5bds_TM"],
+        ["FDz5pVTxuTQ", "Njy1Js7p-7w", "lUJC0XCIpzM", "DwBqtTo5pls", "FNTH2kA6pRE", " ", "Deq9Ban73ZQ", " "],
+        ["Oo3Dn4FdumY", "dY2g7QQEVqM", "Mc8lOyWC_to", "YyVL4nzniPc", " ", " ", " ", " "],
+        ["MyN4snZwyJY", "fGhSD4-A2qI", "C_zyOKfjowM", "8zhsPpuWBqU", " ", " ", " ", " "],
+        ["N3FhMaLNXyQ", "K9l6dYnqRGg", "iYjanniNaTM", "AiKkEs-SJl8", " ", " ", " ", " "],
+        ["ZMYmyW0vmq4", "s6UNKqUkNjM", "f-yjW0X1ZYE", "jfxQdrMHoV4", " ", " ", " ", " "],
+        ["9nV-6pavtrw", "zVeY5mHg7yI", "soYCBkCBn0c", "kcMwnBWP_CA", " ", " ", " ", " "],
+        ["d-BYLt347XQ", "8bEJQgfF8vo", "bytvOIU5slk", "MB4qqSlmvPI", " ", " ", " ", " "],
+        ["v2FYK2ku4hw", "N4ymrYd1AH4", "zzMhhZ0kEso", "f8LvvbNeu_A", " ", " ", " ", " "],
+        ["bKSKqv_quxw", "gh1U6uiXiF4", "1pjeMbhSyW0", "XTHXnshts6Q", " ", " ", " ", " "],
+        ["ukH4uZ6YAwA", "XneFEPeUEts", "-aMbckaXaps", "qsVw6ZBjFxY", " ", " ", " ", " "],
+        ["AF5rZP4ghPY", "4X_V8HLrPmE", "dKuNzLtzzsM", "cE0o4BoLIrw", " ", " ", " ", " "],
+        ["vPYZeH4WQ4U", "EmC5j4oJBZA", "jxaCKmO23gM", "dMO62_m3r8I", " ", " ", " ", " "]
+      ]
+      var links2 = [
+        ["IR", "NLP", "DRL", "DNN", "IR Webinar", "NLP Webinar", "DRL Webinar", "DNN Webinar"],
+        ["cEW_egh9mCY", "clGQuDlnGCI", "55IFGTH9sCA", "ZryOMCZ9sdg", "4I5oPlkizlQ", "q0N1NHuGTjE", "ELsL1Hvm3DI", "iPrp7jAYyxY"],
+        ["nP-ptYcV1oo", "Jvp03Z-tKs4", "cxFj1ksI_AA", "aPZNVl2JByw", "WbWBxwub5aI", "1R94C8ERElo", "mnL3b3XK-uU", " "],
+        ["epa0Qt9kWHk", "WVacIpLW0M4", "HrJL9_GZtrc", "cjATJHSMF3Y", " ", " ", " ", " "],
+        ["iQE0twW9fuU", "QeK49pd6DGE", "DQUf5R9wcuE", "hQ4EpNUJPKQ", " ", " ", " ", " "],
+        ["YWkbNIpC_Mc", "a6t72uieJ78", "lD13_bzSTtQ", "Ku19gjKJBwk", " ", " ", " ", " "],
+        ["F-8yFLAQmDA", "D2Ots2FxYqg", "D1cOTW1aMLQ", "TDWITcwMhRE", " ", " ", " ", " "],
+        ["AUuKZCF_H04", "qU-BlD-cNIM", " ", "AlT1hiUuYFY", " ", " ", " ", " "],
+        ["vOT2TMXC0oI", "AYKXuGoedsQ", "8Zh4eNgN8z8", "6ZXL3KIVYdU", " ", " ", " ", " "],
+      ]
+
+      function createRow(cols, table, r_index, sem) {
+        var val = r_index == 0 ? 'th' : 'td';
+        var t_hb = document.createElement(r_index == 0 ? 'thead' : 'tbody');
+        var value = sem == 1 ? sem1Rows : sem2Rows;
+        var tr = document.createElement('tr');
+        cols.forEach((col, c_index) => {
+          if (c_index == 0) {
+            var index = document.createElement(val);
+            index.textContent = r_index == 0 ? " " : r_index;
+            tr.appendChild(index);
+          }
+          const t = document.createElement(val);
+          t.textContent = col == " " ? "" : value[r_index][c_index];
+          if (col == " ")
+            t.style.borderStyle = "none";
+          else if (r_index != 0) {
+            t.addEventListener("click", function() {
+              title.innerHTML = t.textContent;
+              table.style.display = "none";
+              videoPlayer.style.display = "block";
+              files.style.display = "block";
+              input.style.display = "block";
+              videoPlayer.innerHTML = '<iframe style="float:left;height: 500px;width: 70%;" src="https://www.youtube.com/embed/' + col + '?rel=0&autoplay=1&cc_load_policy=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen marginwidth="0" marginheight="0" scrolling="auto"></iframe>';
+              input.innerHTML = '<iframe style="height: 500px; float:right; width:29.6%; border: 2px solid green;" src="https://docs.google.com/spreadsheets/d/1JYuU5wDgu8BRtGMhyPfCTN8OrHp_6BTxDBcmofXJy5g/edit#gid=0&widget=true&headers=false"></iframe>';
+            });
+          }
+          tr.appendChild(t);
+          videoPlayer.innerHTML = "";
+          files.style.display = "none";
+          input.style.display = "none";
+        });
+        t_hb.appendChild(tr);
+        table.appendChild(t_hb);
+        return table;
+      }
+
+      function createTable(sem) {
+        var rows = (sem == "1") ? sem1Rows : sem2Rows;
+        var li = (sem == "1") ? links : links2;
+        var table = document.getElementById('table');
+        table.innerHTML = "";
+        table.style.display = 'block';
+        table.style.borderCollapse = 'collapse';
+        li.forEach((row, r_index) => {
+          createRow(row, table, Number(r_index), sem);
+        });
+      }
+      var input = document.getElementById('input');
+      var title = document.getElementById('title');
+      var videoPlayer = document.getElementById('videoPlayer');
+      var files = document.getElementById('files');
+
+    </script>
+  </body>
+
+</html>
