@@ -26,19 +26,10 @@
         const options = { coercionType: Office.CoercionType.Text };
 
         // clear current selection
-        // await Office.context.document.setSelectedDataAsync(" ", options);
+        await Office.context.document.setSelectedDataAsync(" ", options);
 
         // Set text in selection to 'Hello world!'
-        // await Office.context.document.setSelectedDataAsync("Hello world!", options);
-		await Office.context.ui.displayDialogAsync(
-		"https://raw.githubusercontent.com/Anishak17/try2/main/table_Jul_24.html",
-		function(asyncResult) {
-		  if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-			console.log(asyncResult.error.code);
-			console.log(asyncResult.error.message);
-		  }
-    }
-  );
+        await Office.context.document.setSelectedDataAsync("Hello world!", options);
     }
 
 </script>
